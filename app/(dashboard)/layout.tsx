@@ -2,7 +2,7 @@
 
 import ConvexClientProvider from "@/app/ConvexClientProvider";
 import { auth, signOut } from "@/auth";
-import { StickyHeader } from "@/components/layout/sticky-header";
+import DesktopNav from "@/components/nav/nav";
 import { Button } from "@/components/ui/button";
 
 export default async function LoggedInLayout({
@@ -13,15 +13,17 @@ export default async function LoggedInLayout({
   const session = await auth();
   return (
     <>
-      <StickyHeader className="px-4 py-2">
-        <div className="flex justify-between items-center">
-          Dashboard
-          <SignOut />
-        </div>
-      </StickyHeader>
-      <main className="container max-w-2xl flex flex-col gap-8">
+      <main className="">
         <ConvexClientProvider session={session}>
-          {children}
+          <div className="flex">
+            <div>
+              <DesktopNav />
+            </div>
+            <div className="container max-w-2xl flex flex-col gap-8">
+              <SignOut />
+              {children}
+            </div>
+          </div>
         </ConvexClientProvider>
       </main>
     </>
