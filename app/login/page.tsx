@@ -1,5 +1,5 @@
 import React from "react";
-import { SignIn } from "@/app/page";
+import { SignIn } from "./signin";
 
 const Login = () => {
   return (
