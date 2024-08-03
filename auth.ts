@@ -6,19 +6,19 @@ import Resend from "next-auth/providers/resend";
 
 if (process.env.CONVEX_AUTH_PRIVATE_KEY === undefined) {
   throw new Error(
-    "Missing CONVEX_AUTH_PRIVATE_KEY Next.js environment variable",
+    "Missing CONVEX_AUTH_PRIVATE_KEY Next.js environment variable"
   );
 }
 
 if (process.env.NEXT_PUBLIC_CONVEX_URL === undefined) {
   throw new Error(
-    "Missing NEXT_PUBLIC_CONVEX_URL Next.js environment variable",
+    "Missing NEXT_PUBLIC_CONVEX_URL Next.js environment variable"
   );
 }
 
 const CONVEX_SITE_URL = process.env.NEXT_PUBLIC_CONVEX_URL!.replace(
   /.cloud$/,
-  ".site",
+  ".site"
 );
 
 export const { handlers, signIn, signOut, auth } = NextAuth({
@@ -29,13 +29,16 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
       from: "My App <onboarding@resend.dev>",
     }),
   ],
+  pages: {
+    signIn: "/login",
+  },
   adapter: ConvexAdapter,
   callbacks: {
     // Attach a JWT for authenticating with Convex
     async session({ session }) {
       const privateKey = await importPKCS8(
         process.env.CONVEX_AUTH_PRIVATE_KEY!,
-        "RS256",
+        "RS256"
       );
       const convexToken = await new SignJWT({
         // These fields will be available on `ctx.auth.getUserIdentity()`
