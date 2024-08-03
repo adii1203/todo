@@ -28,7 +28,7 @@ export default async function LoggedInLayout({
   );
 }
 
-export function SignOut() {
+const SignOut = () => {
   return (
     <form
       action={async () => {
@@ -38,4 +38,4 @@ export function SignOut() {
       <Button type="submit">Sign out</Button>
     </form>
   );
-}
+};

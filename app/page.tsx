@@ -23,7 +23,7 @@ export default function Home() {
   );
 }
 
-export function SignIn() {
+const SignIn = () => {
   return (
     <form
       action={async () => {
@@ -39,4 +39,4 @@ export function SignIn() {
       <Button type="submit">Sign in</Button>
     </form>
   );
-}
+};
