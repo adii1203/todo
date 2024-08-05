@@ -23,7 +23,7 @@ export const accountSchema = {
     v.literal("email"),
     v.literal("oidc"),
     v.literal("oauth"),
-    v.literal("webauthn"),
+    v.literal("webauthn")
   ),
   provider: v.string(),
   providerAccountId: v.string(),
@@ -63,7 +63,7 @@ const authTables = {
     .index("userId", ["userId"]),
   verificationTokens: defineTable(verificationTokenSchema).index(
     "identifierToken",
-    ["identifier", "token"],
+    ["identifier", "token"]
   ),
   authenticators: defineTable(authenticatorSchema)
     .index("userId", ["userId"])
@@ -72,7 +72,18 @@ const authTables = {
 
 export default defineSchema({
   ...authTables,
-  numbers: defineTable({
-    value: v.number(),
+  todos: defineTable({
+    userId: v.id("users"),
+    title: v.string(),
+    description: v.optional(v.string()),
+    isCompleted: v.boolean(),
+    dueDate: v.number(),
+    priority: v.number(),
+    labelId: v.optional(v.id("labels")),
+  }),
+  labels: defineTable({
+    userId: v.id("users"),
+    name: v.string(),
+    type: v.union(v.literal("users"), v.literal("system")),
   }),
 });
