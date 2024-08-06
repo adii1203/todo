@@ -1,8 +1,8 @@
 import { Button } from "@/components/ui/button";
 import { Separator } from "@/components/ui/separator";
-import { Filter, Plus } from "lucide-react";
+import { Filter } from "lucide-react";
 import AddTask from "@/components/add-task/add-task-dialog";
-// import Todo from "@/components/todos/todo";
+import TodoList from "@/components/todos/todo-list";
 const Today = () => {
   return (
     <div className="mt-10">
@@ -21,7 +21,9 @@ const Today = () => {
             <span>Filter</span>
           </Button>
         </div>
-        <div>{/* <Todo /> */}</div>
+        <div>
+          <TodoList />
+        </div>
       </div>
     </div>
   );
