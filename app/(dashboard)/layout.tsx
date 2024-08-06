@@ -20,7 +20,6 @@ export default async function LoggedInLayout({
               <DesktopNav />
             </div>
             <div className="container max-w-2xl flex flex-col gap-8">
-              <SignOut />
               {children}
             </div>
           </div>
