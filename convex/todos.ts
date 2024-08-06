@@ -37,3 +37,27 @@ export const getAllTodos = query({
     return todos;
   },
 });
+
+export const checkTodo = mutation({
+  args: {
+    todoId: v.id("todos"),
+  },
+  handler: async (ctx, args) => {
+    const newTodo = await ctx.db.patch(args.todoId, {
+      isCompleted: true,
+    });
+    return newTodo;
+  },
+});
+
+export const unCheckTodo = mutation({
+  args: {
+    todoId: v.id("todos"),
+  },
+  handler: async (ctx, args) => {
+    const newTodo = await ctx.db.patch(args.todoId, {
+      isCompleted: false,
+    });
+    return newTodo;
+  },
+});
