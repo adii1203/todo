@@ -11,11 +11,31 @@ import { Button } from "../ui/button";
 import { CalendarClock, Flag, Plus, Tag } from "lucide-react";
 import { Input } from "../ui/input";
 import { Separator } from "../ui/separator";
+import { useMutation } from "convex/react";
+import { api } from "@/convex/_generated/api";
 
 const AddTask = () => {
   const [open, setOpen] = useState(false);
   const [title, setTitle] = useState("");
   const [description, setDescription] = useState("");
+
+  const addTodo = useMutation(api.todos.addTodo);
+
+  const handelAddTodo = async () => {
+    if (title === "") {
+      return;
+    }
+    await addTodo({
+      title,
+      description,
+      dueDate: 2,
+      priority: 1,
+      isCompleted: false,
+    });
+    setTitle("");
+    setDescription("");
+    setOpen(false);
+  };
 
   return (
     <div>
@@ -61,7 +81,9 @@ const AddTask = () => {
           </div>
           <Separator className="" />
           <DialogFooter className="mr-4 pb-3">
-            <Button className="">{"Add Task"}</Button>
+            <Button onClick={handelAddTodo} className="">
+              {"Add Task"}
+            </Button>
           </DialogFooter>
         </DialogContent>
       </Dialog>
