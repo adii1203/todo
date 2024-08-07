@@ -39,7 +39,7 @@ const DesktopNav = () => {
             title: "Filter & Labels",
             label: "",
             icon: ListFilter,
-            path: "filter-labels",
+            path: "/labels",
           },
           {
             title: "Archive",
