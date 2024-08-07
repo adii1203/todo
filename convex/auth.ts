@@ -8,3 +8,11 @@ export async function getViewerId(ctx: { auth: Auth }) {
   }
   return identity.subject as Id<"users">;
 }
+
+export const handelUserId = async (ctx: { auth: Auth }) => {
+  const userId = await getViewerId(ctx);
+  if (userId === null) {
+    console.error("User is not authenticated");
+  }
+  return userId;
+};
