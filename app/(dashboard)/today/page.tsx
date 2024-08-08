@@ -1,7 +1,7 @@
 import { Button } from "@/components/ui/button";
 import { Separator } from "@/components/ui/separator";
 import { Filter } from "lucide-react";
-import AddTask from "@/components/add-task/add-task-dialog";
+import AddTask from "@/components/modals/add-task-dialog";
 import TodoList from "@/components/todos/todo-list";
 const Today = () => {
   return (

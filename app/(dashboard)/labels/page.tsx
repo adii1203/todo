@@ -1,4 +1,5 @@
-import AddLabels from "@/components/add-task/add-label-dialog";
+import Labels from "@/components/labels/label-list";
+import LabelModal from "@/components/labels/labelModal";
 
 const Label = () => {
   return (
@@ -8,7 +9,10 @@ const Label = () => {
       </div>
       <div className="flex items-center justify-between border-b border-border py-2">
         <p>Labels</p>
-        <AddLabels />
+        <LabelModal />
+      </div>
+      <div>
+        <Labels />
       </div>
     </div>
   );
