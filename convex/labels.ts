@@ -67,3 +67,23 @@ export const editLabel = mutation({
     }
   },
 });
+
+export const getLabelById = query({
+  args: {
+    id: v.optional(v.id("labels")),
+  },
+  handler: async (ctx, args) => {
+    const userId = await handelUserId(ctx);
+    if (args.id) {
+      if (!userId) throw new ConvexError("User is not authenticated");
+
+      const label = await ctx.db.get(args.id);
+
+      if (label?.userId !== userId) {
+        throw new ConvexError("Unauthorized");
+      }
+
+      return label;
+    }
+  },
+});
