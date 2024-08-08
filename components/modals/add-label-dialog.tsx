@@ -1,5 +1,3 @@
-/* eslint-disable @typescript-eslint/no-misused-promises */
-
 "use client";
 
 import React, {
@@ -24,34 +22,87 @@ import { Input } from "../ui/input";
 import { useMutation } from "convex/react";
 import { api } from "@/convex/_generated/api";
 import { ConvexError } from "convex/values";
+import { Doc } from "@/convex/_generated/dataModel";
+import { toast } from "sonner";
 
 const AddLabels = ({
   open,
   setOpen,
   Icon,
+  duplicateData,
 }: {
   open: boolean;
   setOpen: Dispatch<SetStateAction<boolean>>;
   Icon: LucideIcon;
+  duplicateData?: Doc<"labels">;
 }) => {
   const addLabel = useMutation(api.labels.addLabel);
-  const [label, setLabel] = useState("");
+  const editLabel = useMutation(api.labels.editLabel);
+  const [label, setLabel] = useState<{ name: string }>(
+    duplicateData || { name: "" }
+  );
+
+  const [saving, setSaving] = useState(false);
 
   const handelAddLabel = async () => {
     try {
+      setSaving(true);
       const labelId = await addLabel({
-        name: label,
+        name: label.name,
       });
       if (labelId) {
-        setLabel("");
+        setLabel({ name: "" });
         setOpen(false);
+        toast.success("Label added");
+        setSaving(false);
       }
     } catch (error) {
       if (error instanceof ConvexError) {
         console.log(error.data);
       }
+      toast.error("Something went wrong");
+      setSaving(false);
     }
   };
+
+  const handelEditLabel = async () => {
+    try {
+      if (duplicateData) {
+        setSaving(true);
+        const isSuccess = await editLabel({
+          id: duplicateData?._id,
+          name: label.name,
+        });
+        if (isSuccess) {
+          setOpen(false);
+          setSaving(false);
+          toast.success("Label updated");
+        }
+      }
+    } catch (error) {
+      if (error instanceof ConvexError) {
+        toast.error(error.data);
+      }
+      toast.error("Something went wrong");
+      setSaving(false);
+    }
+  };
+
+  const saveDisabled = useMemo(() => {
+    if (
+      !open ||
+      saving ||
+      label.name === "" ||
+      (duplicateData &&
+        Object.entries(duplicateData).every(([key, value]) => {
+          return label[key as keyof typeof label] === value;
+        }))
+    ) {
+      return true;
+    } else {
+      return false;
+    }
+  }, [label, saving, duplicateData, open]);
 
   return (
     <div>
@@ -70,8 +121,8 @@ const AddLabels = ({
                 Name
               </label>
               <Input
-                value={label}
-                onChange={(e) => setLabel(e.target.value)}
+                value={label.name}
+                onChange={(e) => setLabel({ ...label, name: e.target.value })}
                 type="text"
                 id="label"
                 className="border border-border focus-visible:border-primary/50"
@@ -87,7 +138,11 @@ const AddLabels = ({
           <Separator className="mt-3" />
           <DialogFooter className="pb-3 px-3">
             <div className="flex justify-end">
-              <Button onClick={handelAddLabel} size={"sm"} variant={"default"}>
+              <Button
+                disabled={saveDisabled}
+                onClick={duplicateData ? handelEditLabel : handelAddLabel}
+                size={"sm"}
+                variant={"default"}>
                 Save
               </Button>
             </div>
@@ -116,12 +171,25 @@ const AddLabelButton = ({
   );
 };
 
-export const useAddLabelModal = ({ Icon }: { Icon: LucideIcon }) => {
+export const useAddLabelModal = ({
+  Icon,
+  duplicateData,
+}: {
+  Icon: LucideIcon;
+  duplicateData?: Doc<"labels">;
+}) => {
   const [open, setOpen] = useState(false);
 
   const AddLabelCallBack = useCallback(() => {
-    return <AddLabels Icon={Icon} open={open} setOpen={setOpen} />;
-  }, [open, Icon]);
+    return (
+      <AddLabels
+        duplicateData={duplicateData}
+        Icon={Icon}
+        open={open}
+        setOpen={setOpen}
+      />
+    );
+  }, [open, Icon, duplicateData]);
 
   return useMemo(
     () => ({

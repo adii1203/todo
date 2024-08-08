@@ -10,7 +10,11 @@ import { useAddLabelModal } from "../modals/add-label-dialog";
 
 const Label = ({ label }: { label: Doc<"labels"> }) => {
   const deleteLabel = useMutation(api.labels.deleteLabel);
-  const { AddLabelCallBack } = useAddLabelModal({ Icon: Edit2 });
+  const { AddLabelCallBack } = useAddLabelModal({
+    Icon: Edit2,
+    duplicateData: label,
+  });
+
   return (
     <>
       <div className="flex group items-center justify-between font-medium border-b border-border h-8">
