@@ -2,7 +2,13 @@
 
 "use client";
 
-import React, { useState } from "react";
+import React, {
+  Dispatch,
+  SetStateAction,
+  useCallback,
+  useMemo,
+  useState,
+} from "react";
 import {
   Dialog,
   DialogContent,
@@ -12,17 +18,24 @@ import {
   DialogTrigger,
 } from "../ui/dialog";
 import { Button } from "../ui/button";
-import { Plus } from "lucide-react";
+import { LucideIcon } from "lucide-react";
 import { Separator } from "../ui/separator";
 import { Input } from "../ui/input";
 import { useMutation } from "convex/react";
 import { api } from "@/convex/_generated/api";
 import { ConvexError } from "convex/values";
 
-const AddLabels = () => {
+const AddLabels = ({
+  open,
+  setOpen,
+  Icon,
+}: {
+  open: boolean;
+  setOpen: Dispatch<SetStateAction<boolean>>;
+  Icon: LucideIcon;
+}) => {
   const addLabel = useMutation(api.labels.addLabel);
   const [label, setLabel] = useState("");
-  const [open, setOpen] = useState(false);
 
   const handelAddLabel = async () => {
     try {
@@ -44,9 +57,7 @@ const AddLabels = () => {
     <div>
       <Dialog open={open} onOpenChange={setOpen}>
         <DialogTrigger asChild>
-          <Button variant={"ghost"} size={"icon"} className="w-8 h-8">
-            <Plus />
-          </Button>
+          <AddLabelButton setOpen={setOpen} Icon={Icon} />
         </DialogTrigger>
         <DialogContent className="p-0 max-w-md top-60">
           <DialogHeader className="flex px-2 pt-4">
@@ -84,6 +95,41 @@ const AddLabels = () => {
         </DialogContent>
       </Dialog>
     </div>
+  );
+};
+
+const AddLabelButton = ({
+  Icon,
+  setOpen,
+}: {
+  Icon: LucideIcon;
+  setOpen: Dispatch<SetStateAction<boolean>>;
+}) => {
+  return (
+    <Button
+      onClick={() => setOpen(true)}
+      variant={"ghost"}
+      size={"icon"}
+      className="w-8 h-8">
+      {<Icon size={18} />}
+    </Button>
+  );
+};
+
+export const useAddLabelModal = ({ Icon }: { Icon: LucideIcon }) => {
+  const [open, setOpen] = useState(false);
+
+  const AddLabelCallBack = useCallback(() => {
+    return <AddLabels Icon={Icon} open={open} setOpen={setOpen} />;
+  }, [open, Icon]);
+
+  return useMemo(
+    () => ({
+      AddLabelCallBack,
+      open,
+      setOpen,
+    }),
+    [AddLabelCallBack, open, setOpen]
   );
 };
 
