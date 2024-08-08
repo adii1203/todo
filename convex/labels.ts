@@ -46,3 +46,24 @@ export const deleteLabel = mutation({
     }
   },
 });
+
+export const editLabel = mutation({
+  args: {
+    id: v.id("labels"),
+    name: v.string(),
+  },
+  handler: async (ctx, args) => {
+    try {
+      const userId = await handelUserId(ctx);
+      if (!userId) throw new ConvexError("User is not authenticated");
+
+      await ctx.db.patch(args.id, {
+        name: args.name,
+      });
+
+      return true;
+    } catch (error) {
+      return false;
+    }
+  },
+});
