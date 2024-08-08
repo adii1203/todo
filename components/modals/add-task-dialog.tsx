@@ -7,6 +7,7 @@ import {
   Dialog,
   DialogContent,
   DialogFooter,
+  DialogOverlay,
   DialogTrigger,
 } from "../ui/dialog";
 import { Button } from "../ui/button";
@@ -15,10 +16,13 @@ import { Input } from "../ui/input";
 import { Separator } from "../ui/separator";
 import { useMutation } from "convex/react";
 import { api } from "@/convex/_generated/api";
+import SetLabel from "./addtask/set-label";
+import { Doc } from "@/convex/_generated/dataModel";
 
 const AddTask = () => {
   const [open, setOpen] = useState(false);
   const [title, setTitle] = useState("");
+  const [selectedLabel, setSelectedLabel] = useState<Doc<"labels">>();
   const [description, setDescription] = useState("");
 
   const addTodo = useMutation(api.todos.addTodo);
@@ -33,22 +37,26 @@ const AddTask = () => {
       dueDate: 2,
       priority: 1,
       isCompleted: false,
+      labelId: selectedLabel?._id,
     });
     setTitle("");
     setDescription("");
+    setSelectedLabel(undefined);
     setOpen(false);
   };
 
   return (
     <div>
-      <Dialog open={open} onOpenChange={setOpen}>
+      <Dialog modal={false} open={open} onOpenChange={setOpen}>
         <DialogTrigger asChild>
           <Button className="h-7 flex  items-center gap-2">
             <Plus size={16} />
             <span>New Task</span>
           </Button>
         </DialogTrigger>
-        <DialogContent className="p-0 pt-6">
+        {/* <DialogPortal> */}
+        <DialogOverlay className="" />
+        <DialogContent className="p-0 pt-6 top-52 shadow-2xl">
           <div className="space-y-4">
             <div>
               <Input
@@ -75,10 +83,10 @@ const AddTask = () => {
                 <Flag size={15} />
                 <span>Priority</span>
               </Button>
-              <Button variant={"outline"} className="h-7 space-x-1 text-xs">
-                <Tag size={15} />
-                <span>Labels</span>
-              </Button>
+              <SetLabel
+                selectedLabel={selectedLabel!}
+                setSelectedLabel={setSelectedLabel}
+              />
             </div>
           </div>
           <Separator className="" />
@@ -88,6 +96,8 @@ const AddTask = () => {
             </Button>
           </DialogFooter>
         </DialogContent>
+        {/* </DialogPortal> */}
+        {/* </DialogOverlay> */}
       </Dialog>
     </div>
   );
