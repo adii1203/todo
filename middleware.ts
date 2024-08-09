@@ -1,11 +1,38 @@
-import { auth } from "@/auth";
+import { auth as middleware } from "@/auth";
 
-export default auth((request) => {
-  if (!request.auth) {
-    return Response.redirect(new URL("/", request.url));
+import { apiAuthPrefix, authRoutes, publicRoutes } from "./routes";
+
+export default middleware((req) => {
+  const { nextUrl } = req;
+
+  const isLoggedin = !!req.auth;
+
+  const isApiAuthRoute = nextUrl.pathname.startsWith(apiAuthPrefix);
+  const isPublicRoute = publicRoutes.includes(nextUrl.pathname);
+  const isAuthRoute = authRoutes.includes(nextUrl.pathname);
+
+  if (isApiAuthRoute) {
+    return undefined;
   }
+
+  if (isAuthRoute) {
+    if (isLoggedin) {
+      return Response.redirect(new URL("/today", nextUrl));
+    }
+    return undefined;
+  }
+
+  if (isLoggedin && isPublicRoute) {
+    return Response.redirect(new URL("/today", nextUrl));
+  }
+
+  if (!isLoggedin && !isPublicRoute) {
+    return Response.redirect(new URL("/login", nextUrl));
+  }
+
+  return undefined;
 });
 
 export const config = {
-  matcher: ["/(dashboard.*)"],
+  matcher: ["/((?!.*\\..*|_next).*)", "/", "/(api|trpc)(.*)"],
 };
