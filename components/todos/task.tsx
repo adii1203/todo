@@ -5,11 +5,15 @@ import React from "react";
 import { Checkbox } from "../ui/checkbox";
 import { cn } from "@/lib/utils";
 
+type Todo = Doc<"todos">;
+type Labels = Doc<"labels">;
+type TodoWithLabel = Todo & { label: Labels | null };
+
 const Task = ({
   data,
   handelCheck,
 }: {
-  data: Doc<"todos">;
+  data: TodoWithLabel;
   handelCheck: (isCompleted: boolean, todoId: Id<"todos">) => void;
 }) => {
   return (

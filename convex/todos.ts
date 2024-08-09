@@ -34,7 +34,14 @@ export const getAllTodos = query({
       .filter((q) => q.eq(q.field("userId"), user?.subject))
       .collect();
 
-    return todos;
+    const todosWithLabels = await Promise.all(
+      todos.map(async (todo) => {
+        const label = todo.labelId ? await ctx.db.get(todo.labelId) : null;
+        return { ...todo, label };
+      })
+    );
+
+    return todosWithLabels;
   },
 });
 
