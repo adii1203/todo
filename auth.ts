@@ -26,7 +26,7 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
     GitHub,
     Resend({
       name: "email",
-      from: "My App <onboarding@resend.dev>",
+      from: "Toodo <hello@toodo.apipro.xyz>",
     }),
   ],
   pages: {
